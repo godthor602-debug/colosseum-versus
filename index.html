@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Total Battle Dynamic Stacking Optimizer</title>
+  <title>Total Battle March Optimizer - Epic Monster Presets</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -32,7 +31,7 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
       display: grid;
       gap: 20px;
@@ -43,9 +42,9 @@
       color: var(--primary);
     }
 
-    .grid-2 {
+    .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 16px;
     }
 
@@ -58,7 +57,7 @@
 
     label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
       margin-bottom: 4px;
       margin-top: 10px;
@@ -71,7 +70,7 @@
       border: 1px solid var(--border);
       border-radius: 4px;
       color: var(--text);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
 
     input:focus, select:focus {
@@ -80,13 +79,13 @@
     }
 
     .btn {
-      padding: 9px 18px;
+      padding: 9px 16px;
       border-radius: 6px;
       font-weight: 600;
       border: none;
       cursor: pointer;
-      font-size: 0.9rem;
-      transition: opacity 0.2s;
+      font-size: 0.88rem;
+      transition: opacity 0.2s, background-color 0.2s;
     }
 
     .btn:hover {
@@ -101,6 +100,11 @@
     .btn-accent {
       background: var(--accent);
       color: #0f172a;
+    }
+
+    .btn-neutral {
+      background: #475569;
+      color: var(--text);
     }
 
     .btn-danger {
@@ -118,7 +122,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
     }
 
     th, td {
@@ -137,7 +141,7 @@
     }
 
     .status-shield {
-      color: var(--text-muted);
+      color: #fbbf24;
       font-weight: 600;
     }
 
@@ -146,11 +150,30 @@
       font-weight: 700;
     }
 
+    .badge-class {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: #334155;
+      color: #e2e8f0;
+    }
+
     .warning {
       color: var(--danger);
       font-size: 0.9rem;
       margin-top: 8px;
       font-weight: 600;
+    }
+
+    .save-indicator {
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin-left: 8px;
+      display: inline-block;
+      transition: opacity 0.5s;
     }
 
     .summary {
@@ -171,7 +194,7 @@
 
     .table-input {
       padding: 6px 8px;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
     }
   </style>
 </head>
@@ -179,52 +202,92 @@
 
 <div class="container">
   <header>
-    <h1>Total Battle March Optimizer</h1>
-    <p style="color: var(--text-muted);">Manage your active barracks inventory, dynamically add custom units, and calculate safety-buffered health ladders.</p>
+    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap;">
+      <h1>Total Battle March Optimizer</h1>
+      <span id="saveStatus" class="save-indicator">✓ Synced to local storage</span>
+    </div>
+    <p style="color: var(--text-muted);">
+      Inverted health-ladder generator with <strong>Epic Monster Presets</strong> (Fenrir, Arachne, Jörmungandr, etc.) to configure counter-damage modifiers automatically.
+    </p>
   </header>
 
-  <!-- Player Caps & Buffs -->
-  <div class="grid-2">
+  <!-- Player Caps, Buffs, and Monster Presets -->
+  <div class="grid-3">
+    <!-- 1. March Limits -->
     <div class="card">
-      <h2>1. Player Capacity Caps</h2>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <h2>1. March Limits & Rules</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
         <div>
           <label>Max Leadership</label>
-          <input type="number" id="capLeadership" value="600000">
+          <input type="number" id="capLeadership" value="800000" oninput="saveSettings()">
         </div>
         <div>
           <label>Max Dominance</label>
-          <input type="number" id="capDominance" value="300000">
+          <input type="number" id="capDominance" value="300000" oninput="saveSettings()">
         </div>
         <div>
           <label>Max Authority</label>
-          <input type="number" id="capAuthority" value="100000">
+          <input type="number" id="capAuthority" value="100000" oninput="saveSettings()">
         </div>
         <div>
           <label>Safety Gap (%)</label>
-          <input type="number" id="safetyMargin" value="15" min="5" max="50">
+          <input type="number" id="safetyMargin" value="15" min="5" max="50" oninput="saveSettings()">
         </div>
       </div>
     </div>
 
+    <!-- 2. Base Health Buffs -->
     <div class="card">
-      <h2>2. Active Health Bonuses (%)</h2>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+      <h2>2. Active Health Buffs (%)</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
         <div>
           <label>Guardsmen HP %</label>
-          <input type="number" id="buffGuardsmen" value="85">
+          <input type="number" id="buffGuardsmen" value="85" oninput="saveSettings()">
         </div>
         <div>
           <label>Specialist HP %</label>
-          <input type="number" id="buffSpecialists" value="60">
+          <input type="number" id="buffSpecialists" value="60" oninput="saveSettings()">
         </div>
         <div>
           <label>Monster HP %</label>
-          <input type="number" id="buffMonsters" value="130">
+          <input type="number" id="buffMonsters" value="130" oninput="saveSettings()">
         </div>
         <div>
           <label>Mercenary HP %</label>
-          <input type="number" id="buffMercenaries" value="40">
+          <input type="number" id="buffMercenaries" value="40" oninput="saveSettings()">
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Target Monster Preset & Modifiers -->
+    <div class="card">
+      <h2>3. Target Monster Preset</h2>
+      <label>Select Epic Target</label>
+      <select id="epicPresetSelect" onchange="applyEpicPreset(this.value)">
+        <option value="custom">Custom / Manual Setup</option>
+        <option value="fenrir">Fenrir (Heavy vs Mounted & Melee)</option>
+        <option value="arachne">Arachne (Bonus vs Ranged & Flying)</option>
+        <option value="jormungandr">Jörmungandr (Devastating vs Melee)</option>
+        <option value="fafnir">Fafnir (Fire Breath vs Flying & Ranged)</option>
+        <option value="nemean_lion">Nemean Lion (High Armor vs Melee)</option>
+      </select>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px;">
+        <div>
+          <label>Vs Melee (+% Dmg)</label>
+          <input type="number" id="enemyVsMelee" value="0" step="5" oninput="onModifierChanged()">
+        </div>
+        <div>
+          <label>Vs Ranged (+% Dmg)</label>
+          <input type="number" id="enemyVsRanged" value="0" step="5" oninput="onModifierChanged()">
+        </div>
+        <div>
+          <label>Vs Mounted (+% Dmg)</label>
+          <input type="number" id="enemyVsMounted" value="0" step="5" oninput="onModifierChanged()">
+        </div>
+        <div>
+          <label>Vs Flying (+% Dmg)</label>
+          <input type="number" id="enemyVsFlying" value="0" step="5" oninput="onModifierChanged()">
         </div>
       </div>
     </div>
@@ -233,8 +296,12 @@
   <!-- Dynamic Barracks Management -->
   <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-      <h2>3. Active Barracks Inventory</h2>
-      <div style="display: flex; gap: 10px;">
+      <h2>4. Active Barracks Inventory</h2>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="file" id="jsonFileInput" accept=".json" style="display: none;" onchange="handleFileImport(event)">
+        <button class="btn btn-neutral" onclick="exportConfig()">Export JSON</button>
+        <button class="btn btn-neutral" onclick="document.getElementById('jsonFileInput').click()">Import JSON</button>
+        <button class="btn btn-neutral" onclick="resetToDefaults()">Reset Defaults</button>
         <button class="btn btn-accent" onclick="addCustomTroop()">+ Add Troop</button>
         <button class="btn btn-primary" onclick="calculateStack()">Generate Battle Plan</button>
       </div>
@@ -244,13 +311,15 @@
       <table id="rosterTable">
         <thead>
           <tr>
-            <th style="width: 180px;">Troop Name</th>
-            <th style="width: 130px;">Category</th>
-            <th style="width: 100px;">Base HP</th>
-            <th style="width: 130px;">Cap Type</th>
-            <th style="width: 90px;">Cap Cost</th>
-            <th style="width: 110px;">Inventory</th>
-            <th style="width: 150px;">Role / Target Priority</th>
+            <th style="width: 160px;">Troop Name</th>
+            <th style="width: 70px;">Tier</th>
+            <th style="width: 110px;">Combat Class</th>
+            <th style="width: 110px;">Troop Category</th>
+            <th style="width: 90px;">Base Pool</th>
+            <th style="width: 110px;">Cap Type</th>
+            <th style="width: 80px;">Cap Cost</th>
+            <th style="width: 100px;">Inventory</th>
+            <th style="width: 150px;">Role</th>
             <th style="width: 80px;">Action</th>
           </tr>
         </thead>
@@ -261,7 +330,10 @@
 
   <!-- Calculation Results -->
   <div class="card" id="resultsCard" style="display: none;">
-    <h2>Optimized Deployment Ladder</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <h2>Optimized Deployment Ladder (Sorted by Death Priority)</h2>
+      <button id="copyPlanBtn" class="btn btn-primary" onclick="copyPlanToClipboard()">📋 Copy for Clan / Discord</button>
+    </div>
     <div id="warningMsg" class="warning"></div>
     <div class="summary" id="capSummary"></div>
 
@@ -271,9 +343,11 @@
           <tr>
             <th>Slot</th>
             <th>Troop Name</th>
+            <th>Tier</th>
+            <th>Class</th>
             <th>Quantity Deployed</th>
-            <th>Effective HP / Unit</th>
-            <th>Squad Total HP</th>
+            <th>Effective Pool / Unit</th>
+            <th>Squad Total Pool</th>
             <th>Targeting Priority</th>
             <th>Cap Consumed</th>
           </tr>
@@ -285,15 +359,223 @@
 </div>
 
 <script>
-  let troopRoster = [
-    { id: 1, name: "T4 Swordsmen", category: "guardsman", baseHp: 240, capType: "leadership", capCost: 3, inventory: 40000, isApex: false },
-    { id: 2, name: "T5 Halberdiers", category: "guardsman", baseHp: 380, capType: "leadership", capCost: 4, inventory: 25000, isApex: false },
-    { id: 3, name: "T6 Spies", category: "specialist", baseHp: 490, capType: "leadership", capCost: 8, inventory: 5000, isApex: false },
-    { id: 4, name: "T6 Spearmen", category: "guardsman", baseHp: 620, capType: "leadership", capCost: 6, inventory: 15000, isApex: false },
-    { id: 5, name: "T6 Behemoth", category: "monster", baseHp: 8500, capType: "dominance", capCost: 3000, inventory: 120, isApex: true }
+  const STORAGE_KEY_ROSTER = "tb_stacking_roster_v3";
+  const STORAGE_KEY_SETTINGS = "tb_stacking_settings_v3";
+
+  const EPIC_PRESETS = {
+    custom: { melee: 0, ranged: 0, mounted: 0, flying: 0 },
+    fenrir: { melee: 40, ranged: 0, mounted: 80, flying: 0 },
+    arachne: { melee: 0, ranged: 60, mounted: 0, flying: 90 },
+    jormungandr: { melee: 100, ranged: 20, mounted: 40, flying: 0 },
+    fafnir: { melee: 0, ranged: 50, mounted: 0, flying: 100 },
+    nemean_lion: { melee: 80, ranged: 0, mounted: 50, flying: 20 }
+  };
+
+  const DEFAULT_ROSTER = [
+    { id: 1, name: "T1 Spearmen", tier: 1, combatClass: "melee", category: "guardsman", basePool: 100, capType: "leadership", capCost: 1, inventory: 150000, isApex: false },
+    { id: 2, name: "T4 Archers", tier: 4, combatClass: "ranged", category: "guardsman", basePool: 240, capType: "leadership", capCost: 3, inventory: 40000, isApex: false },
+    { id: 3, name: "T5 Riders", tier: 5, combatClass: "mounted", category: "guardsman", basePool: 450, capType: "leadership", capCost: 4, inventory: 25000, isApex: false },
+    { id: 4, name: "T6 Battle Griffins", tier: 6, combatClass: "flying", category: "guardsman", basePool: 1200, capType: "leadership", capCost: 20, inventory: 5000, isApex: false },
+    { id: 5, name: "T6 Behemoth", tier: 6, combatClass: "melee", category: "monster", basePool: 8500, capType: "dominance", capCost: 3000, inventory: 100, isApex: true }
   ];
 
+  const DEFAULT_SETTINGS = {
+    capLeadership: 800000,
+    capDominance: 300000,
+    capAuthority: 100000,
+    safetyMargin: 15,
+    buffGuardsmen: 85,
+    buffSpecialists: 60,
+    buffMonsters: 130,
+    buffMercenaries: 40,
+    epicPreset: "custom",
+    enemyVsMelee: 0,
+    enemyVsRanged: 0,
+    enemyVsMounted: 0,
+    enemyVsFlying: 0
+  };
+
+  let troopRoster = [];
   let nextId = 6;
+  let latestCalculatedPlan = null;
+  let latestCapsUsage = null;
+
+  function applyEpicPreset(presetKey) {
+    const preset = EPIC_PRESETS[presetKey];
+    if (!preset) return;
+
+    document.getElementById("enemyVsMelee").value = preset.melee;
+    document.getElementById("enemyVsRanged").value = preset.ranged;
+    document.getElementById("enemyVsMounted").value = preset.mounted;
+    document.getElementById("enemyVsFlying").value = preset.flying;
+    saveSettings();
+  }
+
+  function onModifierChanged() {
+    document.getElementById("epicPresetSelect").value = "custom";
+    saveSettings();
+  }
+
+  function loadState() {
+    try {
+      const storedRoster = localStorage.getItem(STORAGE_KEY_ROSTER);
+      if (storedRoster) {
+        troopRoster = JSON.parse(storedRoster);
+        troopRoster.forEach(t => { if (!t.combatClass) t.combatClass = "melee"; });
+        const maxId = troopRoster.reduce((max, t) => Math.max(max, t.id || 0), 0);
+        nextId = maxId + 1;
+      } else {
+        troopRoster = JSON.parse(JSON.stringify(DEFAULT_ROSTER));
+      }
+    } catch (e) {
+      troopRoster = JSON.parse(JSON.stringify(DEFAULT_ROSTER));
+    }
+
+    try {
+      const storedSettings = localStorage.getItem(STORAGE_KEY_SETTINGS);
+      const settings = storedSettings ? JSON.parse(storedSettings) : DEFAULT_SETTINGS;
+      for (const [key, value] of Object.entries(settings)) {
+        if (key === "epicPreset") {
+          const selectEl = document.getElementById("epicPresetSelect");
+          if (selectEl) selectEl.value = value;
+        } else {
+          const inputEl = document.getElementById(key);
+          if (inputEl) inputEl.value = value;
+        }
+      }
+    } catch (e) {
+      for (const [key, value] of Object.entries(DEFAULT_SETTINGS)) {
+        if (key === "epicPreset") {
+          const selectEl = document.getElementById("epicPresetSelect");
+          if (selectEl) selectEl.value = value;
+        } else {
+          const inputEl = document.getElementById(key);
+          if (inputEl) inputEl.value = value;
+        }
+      }
+    }
+  }
+
+  function notifySave() {
+    const status = document.getElementById("saveStatus");
+    status.style.opacity = "1";
+    status.textContent = "✓ Saved to browser storage";
+    clearTimeout(window._saveTimer);
+    window._saveTimer = setTimeout(() => {
+      status.style.opacity = "0.4";
+    }, 1800);
+  }
+
+  function saveRoster() {
+    localStorage.setItem(STORAGE_KEY_ROSTER, JSON.stringify(troopRoster));
+    notifySave();
+  }
+
+  function saveSettings() {
+    const settings = {
+      capLeadership: parseInt(document.getElementById("capLeadership").value) || 0,
+      capDominance: parseInt(document.getElementById("capDominance").value) || 0,
+      capAuthority: parseInt(document.getElementById("capAuthority").value) || 0,
+      safetyMargin: parseFloat(document.getElementById("safetyMargin").value) || 15,
+      buffGuardsmen: parseFloat(document.getElementById("buffGuardsmen").value) || 0,
+      buffSpecialists: parseFloat(document.getElementById("buffSpecialists").value) || 0,
+      buffMonsters: parseFloat(document.getElementById("buffMonsters").value) || 0,
+      buffMercenaries: parseFloat(document.getElementById("buffMercenaries").value) || 0,
+      epicPreset: document.getElementById("epicPresetSelect").value,
+      enemyVsMelee: parseFloat(document.getElementById("enemyVsMelee").value) || 0,
+      enemyVsRanged: parseFloat(document.getElementById("enemyVsRanged").value) || 0,
+      enemyVsMounted: parseFloat(document.getElementById("enemyVsMounted").value) || 0,
+      enemyVsFlying: parseFloat(document.getElementById("enemyVsFlying").value) || 0
+    };
+    localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
+    notifySave();
+  }
+
+  function exportConfig() {
+    const payload = {
+      version: 3,
+      timestamp: new Date().toISOString(),
+      settings: {
+        capLeadership: parseInt(document.getElementById("capLeadership").value) || 0,
+        capDominance: parseInt(document.getElementById("capDominance").value) || 0,
+        capAuthority: parseInt(document.getElementById("capAuthority").value) || 0,
+        safetyMargin: parseFloat(document.getElementById("safetyMargin").value) || 15,
+        buffGuardsmen: parseFloat(document.getElementById("buffGuardsmen").value) || 0,
+        buffSpecialists: parseFloat(document.getElementById("buffSpecialists").value) || 0,
+        buffMonsters: parseFloat(document.getElementById("buffMonsters").value) || 0,
+        buffMercenaries: parseFloat(document.getElementById("buffMercenaries").value) || 0,
+        epicPreset: document.getElementById("epicPresetSelect").value,
+        enemyVsMelee: parseFloat(document.getElementById("enemyVsMelee").value) || 0,
+        enemyVsRanged: parseFloat(document.getElementById("enemyVsRanged").value) || 0,
+        enemyVsMounted: parseFloat(document.getElementById("enemyVsMounted").value) || 0,
+        enemyVsFlying: parseFloat(document.getElementById("enemyVsFlying").value) || 0
+      },
+      roster: troopRoster
+    };
+
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `total_battle_stack_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function handleFileImport(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const imported = JSON.parse(e.target.result);
+        if (!imported || !Array.isArray(imported.roster)) {
+          throw new Error("Invalid configuration format. Missing roster array.");
+        }
+
+        troopRoster = imported.roster;
+        troopRoster.forEach(t => { if (!t.combatClass) t.combatClass = "melee"; });
+        const maxId = troopRoster.reduce((max, t) => Math.max(max, t.id || 0), 0);
+        nextId = maxId + 1;
+        saveRoster();
+
+        if (imported.settings) {
+          for (const [key, value] of Object.entries(imported.settings)) {
+            if (key === "epicPreset") {
+              const selectEl = document.getElementById("epicPresetSelect");
+              if (selectEl) selectEl.value = value;
+            } else {
+              const inputEl = document.getElementById(key);
+              if (inputEl) inputEl.value = value;
+            }
+          }
+          saveSettings();
+        }
+
+        renderRoster();
+        document.getElementById("resultsCard").style.display = "none";
+        alert("Configuration imported successfully!");
+      } catch (err) {
+        alert("Failed to read JSON file: " + err.message);
+      } finally {
+        event.target.value = "";
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function resetToDefaults() {
+    if (!confirm("Reset barracks roster and settings back to original defaults?")) return;
+    localStorage.removeItem(STORAGE_KEY_ROSTER);
+    localStorage.removeItem(STORAGE_KEY_SETTINGS);
+    loadState();
+    renderRoster();
+    document.getElementById("resultsCard").style.display = "none";
+    notifySave();
+  }
 
   function renderRoster() {
     const tbody = document.getElementById("rosterBody");
@@ -303,6 +585,15 @@
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td><input class="table-input" type="text" value="${troop.name}" onchange="updateTroop(${troop.id}, 'name', this.value)"></td>
+        <td><input class="table-input" type="number" min="1" max="10" value="${troop.tier}" onchange="updateTroop(${troop.id}, 'tier', parseInt(this.value) || 1)"></td>
+        <td>
+          <select class="table-input" onchange="updateTroop(${troop.id}, 'combatClass', this.value)">
+            <option value="melee" ${troop.combatClass === 'melee' ? 'selected' : ''}>Melee</option>
+            <option value="ranged" ${troop.combatClass === 'ranged' ? 'selected' : ''}>Ranged</option>
+            <option value="mounted" ${troop.combatClass === 'mounted' ? 'selected' : ''}>Mounted</option>
+            <option value="flying" ${troop.combatClass === 'flying' ? 'selected' : ''}>Flying</option>
+          </select>
+        </td>
         <td>
           <select class="table-input" onchange="updateTroop(${troop.id}, 'category', this.value)">
             <option value="guardsman" ${troop.category === 'guardsman' ? 'selected' : ''}>Guardsman</option>
@@ -311,7 +602,7 @@
             <option value="mercenary" ${troop.category === 'mercenary' ? 'selected' : ''}>Mercenary</option>
           </select>
         </td>
-        <td><input class="table-input" type="number" value="${troop.baseHp}" onchange="updateTroop(${troop.id}, 'baseHp', parseFloat(this.value) || 0)"></td>
+        <td><input class="table-input" type="number" value="${troop.basePool}" onchange="updateTroop(${troop.id}, 'basePool', parseFloat(this.value) || 0)"></td>
         <td>
           <select class="table-input" onchange="updateTroop(${troop.id}, 'capType', this.value)">
             <option value="leadership" ${troop.capType === 'leadership' ? 'selected' : ''}>Leadership</option>
@@ -337,7 +628,10 @@
 
   function updateTroop(id, key, value) {
     const troop = troopRoster.find(t => t.id === id);
-    if (troop) troop[key] = value;
+    if (troop) {
+      troop[key] = value;
+      saveRoster();
+    }
   }
 
   function setApexTroop(id, isApex) {
@@ -349,25 +643,30 @@
       const troop = troopRoster.find(t => t.id === id);
       if (troop) troop.isApex = false;
     }
+    saveRoster();
     renderRoster();
   }
 
   function addCustomTroop() {
     troopRoster.push({
       id: nextId++,
-      name: "Custom Troop",
+      name: "Custom Shield",
+      tier: 1,
+      combatClass: "melee",
       category: "guardsman",
-      baseHp: 500,
+      basePool: 120,
       capType: "leadership",
-      capCost: 5,
-      inventory: 10000,
+      capCost: 1,
+      inventory: 20000,
       isApex: false
     });
+    saveRoster();
     renderRoster();
   }
 
   function removeTroop(id) {
     troopRoster = troopRoster.filter(t => t.id !== id);
+    saveRoster();
     renderRoster();
   }
 
@@ -383,6 +682,13 @@
       specialist: parseFloat(document.getElementById("buffSpecialists").value) || 0,
       monster: parseFloat(document.getElementById("buffMonsters").value) || 0,
       mercenary: parseFloat(document.getElementById("buffMercenaries").value) || 0
+    };
+
+    const monsterCounter = {
+      melee: (parseFloat(document.getElementById("enemyVsMelee").value) || 0) / 100.0,
+      ranged: (parseFloat(document.getElementById("enemyVsRanged").value) || 0) / 100.0,
+      mounted: (parseFloat(document.getElementById("enemyVsMounted").value) || 0) / 100.0,
+      flying: (parseFloat(document.getElementById("enemyVsFlying").value) || 0) / 100.0
     };
 
     const margin = (parseFloat(document.getElementById("safetyMargin").value) || 15) / 100.0;
@@ -402,16 +708,20 @@
       return;
     }
 
-    // Pre-calculate effective HP
+    function computeEffectivePool(unit) {
+      const buffMult = 1 + (buffs[unit.category] || 0) / 100.0;
+      const counterPenalty = 1 + (monsterCounter[unit.combatClass] || 0);
+      return (unit.basePool * buffMult) / counterPenalty;
+    }
+
     const elite = { ...apexUnit };
-    elite.effHp = elite.baseHp * (1 + (buffs[elite.category] || 0) / 100.0);
+    elite.effPool = computeEffectivePool(elite);
 
     usableShields.forEach(s => {
-      s.effHp = s.baseHp * (1 + (buffs[s.category] || 0) / 100.0);
+      s.effPool = computeEffectivePool(s);
     });
 
-    // Sort shields by effective HP per unit (cheapest/lowest base HP to absorb first)
-    usableShields.sort((a, b) => a.effHp - b.effHp);
+    usableShields.sort((a, b) => a.tier - b.tier);
 
     let currentEliteCount = Math.min(
       elite.inventory,
@@ -421,22 +731,20 @@
     let optimalPlan = null;
     let finalCapsUsed = null;
 
-    // Optimization and auto-downscale loop
     while (currentEliteCount > 0) {
       let usedCaps = { leadership: 0, dominance: 0, authority: 0 };
       let assignedCounts = {};
       let feasible = true;
 
-      const eliteTotalHp = currentEliteCount * elite.effHp;
+      const eliteTotalPool = currentEliteCount * elite.effPool;
       usedCaps[elite.capType] += currentEliteCount * elite.capCost;
 
-      // Work backwards: Deepest buffer -> First to die
-      let targetHp = eliteTotalHp;
+      let currentTargetPool = eliteTotalPool;
 
       for (let i = usableShields.length - 1; i >= 0; i--) {
         const shield = usableShields[i];
-        const requiredHp = targetHp * (1 + margin);
-        const neededUnits = Math.ceil(requiredHp / shield.effHp);
+        const requiredPool = currentTargetPool * (1 + margin);
+        const neededUnits = Math.ceil(requiredPool / shield.effPool);
         const capNeeded = neededUnits * shield.capCost;
 
         if (neededUnits > shield.inventory || (usedCaps[shield.capType] + capNeeded) > caps[shield.capType]) {
@@ -446,32 +754,37 @@
 
         assignedCounts[shield.id] = neededUnits;
         usedCaps[shield.capType] += capNeeded;
-        targetHp = neededUnits * shield.effHp;
+        currentTargetPool = neededUnits * shield.effPool;
       }
 
       if (feasible) {
         optimalPlan = [];
 
-        // Build list: First to Die (top) to Protected Apex (bottom)
         usableShields.forEach((shield, idx) => {
           const count = assignedCounts[shield.id];
           optimalPlan.push({
+            slot: idx + 1,
             name: shield.name,
+            tier: shield.tier,
+            combatClass: shield.combatClass,
             count: count,
-            effHp: shield.effHp,
-            totalHp: count * shield.effHp,
-            status: `Dies #${idx + 1}`,
+            effPool: shield.effPool,
+            totalPool: count * shield.effPool,
+            status: `Dies #${idx + 1} (Takes Hit First)`,
             statusClass: "status-shield",
             capUsed: `${shield.capType.toUpperCase()}: ${(count * shield.capCost).toLocaleString()}`
           });
         });
 
         optimalPlan.push({
+          slot: usableShields.length + 1,
           name: elite.name,
+          tier: elite.tier,
+          combatClass: elite.combatClass,
           count: currentEliteCount,
-          effHp: elite.effHp,
-          totalHp: eliteTotalHp,
-          status: "PROTECTED (Dies Last)",
+          effPool: elite.effPool,
+          totalPool: eliteTotalPool,
+          status: "PROTECTED (Survives / Dies Last)",
           statusClass: "status-protected",
           capUsed: `${elite.capType.toUpperCase()}: ${(currentEliteCount * elite.capCost).toLocaleString()}`
         });
@@ -484,6 +797,8 @@
       currentEliteCount -= step;
     }
 
+    latestCalculatedPlan = optimalPlan;
+    latestCapsUsage = { used: finalCapsUsed, caps: caps };
     renderResults(optimalPlan, finalCapsUsed, caps, currentEliteCount, elite.inventory);
   }
 
@@ -492,19 +807,23 @@
     const planBody = document.getElementById("planBody");
     const warningMsg = document.getElementById("warningMsg");
     const capSummary = document.getElementById("capSummary");
+    const copyBtn = document.getElementById("copyPlanBtn");
 
     resultsCard.style.display = "block";
     planBody.innerHTML = "";
     warningMsg.innerHTML = "";
 
     if (!plan) {
-      warningMsg.innerHTML = "Cannot construct a safe ladder. Increase your Leadership cap or add more shield inventory.";
+      warningMsg.innerHTML = "Cannot construct a safe ladder. Increase Leadership cap or add more low-tier shield inventory in your barracks.";
       capSummary.innerHTML = "";
+      copyBtn.style.display = "none";
       return;
     }
 
+    copyBtn.style.display = "inline-block";
+
     if (finalEliteCount < initialEliteInv) {
-      warningMsg.innerHTML = `Note: Protected apex troop was downscaled from ${initialEliteInv.toLocaleString()} to ${finalEliteCount.toLocaleString()} to keep its total HP pool lower than the shields.`;
+      warningMsg.innerHTML = `Note: Protected apex unit was downscaled from ${initialEliteInv.toLocaleString()} to ${finalEliteCount.toLocaleString()} to allow low-tier shields to surpass its pool.`;
     }
 
     capSummary.innerHTML = `
@@ -513,14 +832,16 @@
       <span><strong>Authority:</strong> ${used.authority.toLocaleString()} / ${caps.authority.toLocaleString()}</span>
     `;
 
-    plan.forEach((row, index) => {
+    plan.forEach((row) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>Slot ${index + 1}</td>
+        <td>Slot ${row.slot}</td>
         <td><strong>${row.name}</strong></td>
+        <td>T${row.tier}</td>
+        <td><span class="badge-class">${row.combatClass}</span></td>
         <td>${row.count.toLocaleString()}</td>
-        <td>${Math.round(row.effHp).toLocaleString()}</td>
-        <td><strong>${Math.round(row.totalHp).toLocaleString()}</strong></td>
+        <td>${Math.round(row.effPool).toLocaleString()}</td>
+        <td><strong>${Math.round(row.totalPool).toLocaleString()}</strong></td>
         <td class="${row.statusClass}">${row.status}</td>
         <td>${row.capUsed}</td>
       `;
@@ -528,7 +849,51 @@
     });
   }
 
-  // Initial render
+  function copyPlanToClipboard() {
+    if (!latestCalculatedPlan || latestCalculatedPlan.length === 0) return;
+
+    let text = "⚔️ **TOTAL BATTLE DEPLOYMENT PLAN** ⚔️\n";
+    text += "```\n";
+    text += "#  | Troop Name         | Tier | Class   | Count      | Pool       | Target Order\n";
+    text += "---+--------------------+------+---------+------------+------------+--------------\n";
+
+    latestCalculatedPlan.forEach(row => {
+      const slotStr = String(row.slot).padEnd(2, " ");
+      const nameStr = row.name.slice(0, 18).padEnd(18, " ");
+      const tierStr = `T${row.tier}`.padEnd(4, " ");
+      const classStr = row.combatClass.slice(0, 7).padEnd(7, " ");
+      const countStr = row.count.toLocaleString().padStart(10, " ");
+      const poolStr = (Math.round(row.totalPool / 1000) + "k").padStart(10, " ");
+      const statusStr = row.status.includes("PROTECTED") ? "⭐ PROTECTED" : `Takes Hit #${row.slot}`;
+      text += `${slotStr} | ${nameStr} | ${tierStr} | ${classStr} | ${countStr} | ${poolStr} | ${statusStr}\n`;
+    });
+
+    text += "```\n";
+
+    if (latestCapsUsage && latestCapsUsage.used && latestCapsUsage.caps) {
+      const u = latestCapsUsage.used;
+      const c = latestCapsUsage.caps;
+      text += `📊 **Cap Usage:** Lead: ${u.leadership.toLocaleString()}/${c.leadership.toLocaleString()} | Dom: ${u.dominance.toLocaleString()}/${c.dominance.toLocaleString()} | Auth: ${u.authority.toLocaleString()}/${c.authority.toLocaleString()}\n`;
+    }
+
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById("copyPlanBtn");
+      const originalText = btn.textContent;
+      btn.textContent = "✅ Copied to Clipboard!";
+      btn.style.backgroundColor = "var(--accent)";
+      btn.style.color = "#0f172a";
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.backgroundColor = "";
+        btn.style.color = "";
+      }, 2000);
+    }).catch(err => {
+      alert("Failed to copy automatically: " + err);
+    });
+  }
+
+  // Load persisted state on boot and render
+  loadState();
   renderRoster();
 </script>
 
